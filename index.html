@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no">
+<title>동방황금전 ~ Touhou Golden Palace</title>
+<style>
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
+#unity-canvas { width: 100%; height: 100%; display: block; background: #000; }
+#loading { position: fixed; left: 0; right: 0; top: 45%; text-align: center; color: #f3d37a; font: 20px serif; }
+#bar { width: 40%; height: 10px; margin: 14px auto; background: #333; }
+#fill { width: 0; height: 100%; background: #f3d37a; }
+#error { position: fixed; left: 0; right: 0; top: 8px; text-align: center; color: #f88; font: 14px sans-serif; white-space: pre-wrap; pointer-events: none; }
+</style>
+</head>
+<body>
+<canvas id="unity-canvas" tabindex="-1"></canvas>
+<div id="loading">동방황금전 ~ Touhou Golden Palace<div id="bar"><div id="fill"></div></div></div>
+<div id="error"></div>
+<script>
+['DeviceOrientationEvent', 'DeviceMotionEvent'].forEach(function (n) { if (window[n] && typeof window[n].requestPermission === 'function') window[n].requestPermission = function () { return Promise.resolve('denied'); }; });
+</script>
+<script src="Build/WebGL.loader.js"></script>
+<script>
+var canvas = document.querySelector('#unity-canvas');
+createUnityInstance(canvas, {
+  dataUrl: 'Build/WebGL.data.unityweb',
+  frameworkUrl: 'Build/WebGL.framework.js.unityweb',
+  codeUrl: 'Build/WebGL.wasm.unityweb',
+  streamingAssetsUrl: 'StreamingAssets',
+  companyName: 'keyboardBK',
+  productName: 'Touhou Golden Palace',
+  productVersion: '1.0',
+  matchWebGLToCanvasSize: true,
+  devicePixelRatio: 1,
+  errorHandler: function (e) { console.warn('Unity error:', e); var el = document.querySelector('#error'); if (String(e).indexOf('not granted') < 0) el.textContent = String(e); return true; },
+}, function (p) { document.querySelector('#fill').style.width = (p * 100) + '%'; })
+.then(function () { document.querySelector('#loading').style.display = 'none'; canvas.focus(); })
+.catch(function (e) { document.querySelector('#error').textContent = String(e); });
+</script>
+</body>
+</html>
